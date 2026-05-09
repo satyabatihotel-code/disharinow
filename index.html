@@ -1,70 +1,91 @@
+# Dishari Full Single File App
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Dishari Fashion</title>
-
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
 
 <style>
-
 *{
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:Arial, sans-serif;
+font-family:Arial,sans-serif;
 }
 
 body{
-background:#fff;
+background:#ffffff;
 color:#111;
+padding-bottom:90px;
 }
-
-/* HEADER */
 
 header{
 position:sticky;
 top:0;
-z-index:100;
-background:#fff;
-padding:14px;
-border-bottom:1px solid #eee;
+z-index:1000;
+background:rgba(255,255,255,0.95);
+backdrop-filter:blur(10px);
+padding:14px 16px;
 display:flex;
 justify-content:space-between;
 align-items:center;
+box-shadow:0 2px 12px rgba(0,0,0,0.08);
 }
 
 .logo{
 font-size:24px;
-font-weight:bold;
-letter-spacing:1px;
+font-weight:700;
 }
 
-.cart-btn{
-font-size:22px;
-cursor:pointer;
+.top-icons{
+display:flex;
+gap:16px;
+font-size:20px;
 }
 
-/* CATEGORY */
+.search-box{
+display:none;
+padding:12px;
+background:#fff;
+}
+
+.search-box input{
+width:100%;
+padding:14px;
+border:none;
+border-radius:16px;
+background:#f3f3f3;
+font-size:15px;
+}
+
+.banner{
+padding:12px;
+}
+
+.banner img{
+width:100%;
+border-radius:24px;
+height:190px;
+object-fit:cover;
+box-shadow:0 5px 20px rgba(0,0,0,0.08);
+}
 
 .category-bar{
 display:flex;
-overflow-x:auto;
-padding:12px;
+overflow:auto;
 gap:10px;
-background:#fff;
-position:sticky;
-top:60px;
-z-index:99;
+padding:10px;
 }
 
-.category-btn{
-padding:10px 18px;
+.category-btn,.filter-btn{
+padding:10px 16px;
 border:none;
 border-radius:30px;
-background:#f3f3f3;
-cursor:pointer;
+background:#f4f4f4;
 white-space:nowrap;
 font-weight:600;
 }
@@ -74,48 +95,46 @@ background:#000;
 color:#fff;
 }
 
-/* PRODUCTS */
+.filter-wrap{
+display:flex;
+gap:10px;
+overflow:auto;
+padding:0 10px 12px;
+}
 
 .products{
-padding:10px;
 display:grid;
 grid-template-columns:repeat(2,1fr);
-gap:10px;
+gap:12px;
+padding:12px;
 }
 
 .card{
 background:#fff;
-border-radius:18px;
+border-radius:22px;
 overflow:hidden;
-box-shadow:0 2px 10px rgba(0,0,0,0.08);
-cursor:pointer;
-transition:0.3s;
-}
-
-.card:hover{
-transform:translateY(-2px);
+box-shadow:0 3px 15px rgba(0,0,0,0.08);
 }
 
 .card img{
 width:100%;
 aspect-ratio:3/4;
 object-fit:cover;
-background:#f5f5f5;
 }
 
 .card-content{
-padding:10px;
+padding:12px;
 }
 
-.product-name{
+.card-title{
 font-size:15px;
 font-weight:600;
 margin-bottom:6px;
 }
 
 .price{
-font-size:16px;
-font-weight:bold;
+font-size:18px;
+font-weight:700;
 }
 
 .old-price{
@@ -125,514 +144,416 @@ font-size:13px;
 margin-right:6px;
 }
 
-.offer{
-background:#ffefef;
-color:red;
-padding:4px 8px;
-border-radius:10px;
-font-size:12px;
+.offer-tag{
+margin-top:8px;
 display:inline-block;
-margin-top:6px;
+padding:5px 10px;
+border-radius:20px;
+background:#ffe7e7;
+color:red;
+font-size:12px;
 }
 
-/* MODAL */
+.bottom-nav{
+position:fixed;
+bottom:0;
+left:0;
+width:100%;
+background:#fff;
+display:flex;
+justify-content:space-around;
+padding:12px 0;
+border-radius:24px 24px 0 0;
+box-shadow:0 -2px 20px rgba(0,0,0,0.08);
+z-index:1000;
+}
+
+.nav-btn{
+text-align:center;
+font-size:12px;
+color:#555;
+}
+
+.nav-btn i{
+display:block;
+font-size:20px;
+margin-bottom:4px;
+}
+
+.nav-btn.active{
+color:#000;
+font-weight:700;
+}
 
 .modal{
 position:fixed;
-top:0;
-left:0;
-width:100%;
-height:100%;
+inset:0;
 background:#fff;
-z-index:999;
+z-index:2000;
 display:none;
-flex-direction:column;
 overflow:auto;
 }
 
 .modal.active{
-display:flex;
+display:block;
 }
 
 .close-btn{
 position:fixed;
 top:15px;
 left:15px;
-width:40px;
-height:40px;
-background:#fff;
+width:42px;
+height:42px;
 border-radius:50%;
+background:#fff;
 display:flex;
-justify-content:center;
 align-items:center;
-font-size:22px;
-box-shadow:0 2px 10px rgba(0,0,0,0.2);
-cursor:pointer;
-z-index:1000;
+justify-content:center;
+font-size:20px;
+box-shadow:0 2px 10px rgba(0,0,0,0.15);
+z-index:3000;
 }
-
-/* IMAGE SLIDER */
 
 .slider{
-position:relative;
-width:100%;
-overflow:hidden;
-background:#f5f5f5;
-}
-
-.slides{
 display:flex;
-overflow-x:auto;
+overflow:auto;
 scroll-snap-type:x mandatory;
-scroll-behavior:smooth;
 }
 
-.slides img{
+.slider img{
 width:100%;
 height:70vh;
 object-fit:cover;
-scroll-snap-align:start;
 flex-shrink:0;
+scroll-snap-align:start;
 }
-
-/* DETAILS */
 
 .details{
 padding:18px;
 }
 
-.details h2{
-font-size:24px;
-margin-bottom:10px;
-}
-
-.detail-row{
-margin-bottom:12px;
-font-size:15px;
-line-height:1.5;
-}
-
-.stock{
-display:inline-block;
-padding:6px 12px;
-border-radius:20px;
-font-size:13px;
-font-weight:bold;
-}
-
-.instock{
+.stock-in{
 background:#e7ffe7;
 color:green;
+padding:6px 12px;
+border-radius:20px;
+display:inline-block;
+font-weight:700;
 }
 
-.outstock{
-background:#ffe8e8;
+.stock-out{
+background:#ffe5e5;
 color:red;
+padding:6px 12px;
+border-radius:20px;
+display:inline-block;
+font-weight:700;
 }
 
-.review-box{
-margin-top:20px;
-padding:14px;
-border-radius:14px;
-background:#fafafa;
-}
-
-.review{
-margin-bottom:12px;
-font-size:14px;
-line-height:1.5;
-}
-
-/* BUTTONS */
-
-.bottom-buttons{
-position:sticky;
-bottom:0;
-background:#fff;
-padding:12px;
+.popup-buttons{
 display:flex;
 gap:10px;
-border-top:1px solid #eee;
+position:sticky;
+bottom:0;
+padding:12px;
+background:#fff;
 }
 
-.bottom-buttons button{
+.popup-buttons button{
 flex:1;
 padding:15px;
 border:none;
-border-radius:14px;
+border-radius:16px;
 font-size:16px;
-font-weight:bold;
-cursor:pointer;
+font-weight:700;
 }
 
 .more-btn{
-background:#f3f3f3;
+background:#f1f1f1;
 }
 
-.cart-add-btn{
+.cart-btn{
 background:#000;
 color:#fff;
 }
 
-/* CART PAGE */
-
-.cart-page{
+.page{
 display:none;
-padding:20px;
+padding:18px;
 }
 
-.cart-title{
-font-size:28px;
-font-weight:bold;
-margin-bottom:20px;
+.page.active{
+display:block;
 }
-
-.cart-item{
-padding:14px;
-border:1px solid #eee;
-border-radius:14px;
-margin-bottom:14px;
-display:flex;
-gap:12px;
-align-items:center;
-}
-
-.cart-item img{
-width:80px;
-height:100px;
-object-fit:cover;
-border-radius:10px;
-}
-
-.empty-cart{
-text-align:center;
-padding:60px 20px;
-font-size:18px;
-color:#777;
-}
-
 </style>
 </head>
-
 <body>
 
 <header>
 <div class="logo">Dishari</div>
-<div class="cart-btn" onclick="openCart()">
-<i class="fa-solid fa-cart-shopping"></i>
+<div class="top-icons">
+<i class="fa-solid fa-magnifying-glass" onclick="toggleSearch()"></i>
+<i class="fa-solid fa-cart-shopping" onclick="openPage('cart')"></i>
 </div>
 </header>
 
+<div class="search-box" id="searchBox">
+<input type="text" id="searchInput" placeholder="Search products...">
+</div>
+
+<div id="homePage" class="page active">
+<div class="banner">
+<img src="https://images.unsplash.com/photo-1610030469983-98e550d6193c?q=80&w=1200&auto=format&fit=crop">
+</div>
+
 <div class="category-bar" id="categoryBar"></div>
 
+<div class="filter-wrap">
+<button class="filter-btn" onclick="filterPrice(200)">Under ₹200</button>
+<button class="filter-btn" onclick="filterPrice(500)">Under ₹500</button>
+<button class="filter-btn" onclick="filterPrice(700)">Under ₹700</button>
+<button class="filter-btn" onclick="filterPrice(1000)">Under ₹1000</button>
+</div>
+
 <div class="products" id="products"></div>
-
-<!-- MODAL -->
-
-<div class="modal" id="productModal">
-
-<div class="close-btn" onclick="closeModal()">
-✕
 </div>
 
-<div class="slider">
-<div class="slides" id="slides"></div>
-</div>
-
-<div class="details" id="productDetails"></div>
-
-<div class="bottom-buttons">
-<button class="more-btn" id="moreBtn">More</button>
-<button class="cart-add-btn" id="cartBtn">Add To Cart</button>
-</div>
-
-</div>
-
-<!-- CART PAGE -->
-
-<div class="cart-page" id="cartPage">
-<div class="cart-title">My Cart</div>
+<div id="cartPage" class="page">
+<h2>My Cart</h2>
 <div id="cartItems"></div>
 </div>
 
+<div id="trackPage" class="page">
+<h2>Track Order</h2>
+<br>
+<input type="text" placeholder="Enter Order ID" style="width:100%;padding:15px;border:none;background:#f3f3f3;border-radius:16px;">
+<br><br>
+<button style="width:100%;padding:15px;border:none;border-radius:16px;background:#25D366;color:#fff;font-size:16px;">WhatsApp Support</button>
+</div>
+
+<div id="growPage" class="page">
+<h2>Grow Your Business</h2>
+<br>
+<p>Website Creation</p>
+<br>
+<p>Fashion Catalog Setup</p>
+<br>
+<p>Business Branding</p>
+<br>
+<p>App Development</p>
+</div>
+
+<div class="bottom-nav">
+<div class="nav-btn active" onclick="openPage('home')">
+<i class="fa-solid fa-house"></i>Home
+</div>
+<div class="nav-btn" onclick="openPage('home')">
+<i class="fa-solid fa-store"></i>Products
+</div>
+<div class="nav-btn" onclick="openPage('cart')">
+<i class="fa-solid fa-cart-shopping"></i>Cart
+</div>
+<div class="nav-btn" onclick="openPage('track')">
+<i class="fa-solid fa-truck"></i>Track
+</div>
+<div class="nav-btn" onclick="openPage('grow')">
+<i class="fa-solid fa-chart-line"></i>Grow
+</div>
+</div>
+
+<div class="modal" id="productModal">
+<div class="close-btn" onclick="closeModal()">✕</div>
+<div class="slider" id="slider"></div>
+<div class="details" id="details"></div>
+<div class="popup-buttons">
+<button class="more-btn" id="moreBtn">More</button>
+<button class="cart-btn" id="addCartBtn">Add To Cart</button>
+</div>
+</div>
+
 <script>
+const sheetID='12klOqNz4ER47bvsZrvqJMkYnghi_T63J_LmaYvNeb9c';
+const sheetName='Sheet1';
+const url=`https://opensheet.elk.sh/${sheetID}/${sheetName}`;
 
-const sheetID = "12klOqNz4ER47bvsZrvqJMkYnghi_T63J_LmaYvNeb9c";
-const sheetName = "Sheet1";
-
-const url = `https://opensheet.elk.sh/${sheetID}/${sheetName}`;
-
-let allProducts = [];
-let cart = [];
+let products=[];
+let cart=[];
 
 fetch(url)
-.then(res => res.json())
-.then(data => {
-
-allProducts = data.filter(p => p.Show?.toLowerCase() === "yes");
-
-renderCategories(data);
-
-showProducts("New Arrivals");
-
+.then(res=>res.json())
+.then(data=>{
+products=data.filter(item=>item.Show?.toLowerCase()==='yes');
+renderCategories();
+showProducts('New Arrivals');
 });
 
-function renderCategories(data){
+function renderCategories(){
+const cats=[...new Set(products.map(p=>p.Category))];
+const bar=document.getElementById('categoryBar');
 
-let categories = [...new Set(data.map(item => item.Category).filter(Boolean))];
+bar.innerHTML='';
 
-const bar = document.getElementById("categoryBar");
-
-bar.innerHTML = `
-<button class="category-btn active" onclick="showProducts('New Arrivals', this)">New Arrivals</button>
-<button class="category-btn" onclick="showProducts('All', this)">All</button>
-`;
-
-categories.forEach(cat => {
-
-if(cat !== "New Arrivals"){
-
-bar.innerHTML += `
-<button class="category-btn" onclick="showProducts('${cat}', this)">
-${cat}
-</button>
-`;
-
-}
-
+cats.forEach(cat=>{
+bar.innerHTML+=`<button class="category-btn" onclick="showProducts('${cat}')">${cat}</button>`;
 });
-
 }
 
-function showProducts(category, btn){
+function showProducts(category){
+const container=document.getElementById('products');
+container.innerHTML='';
 
-document.querySelectorAll(".category-btn")
-.forEach(b => b.classList.remove("active"));
+const filtered=products.filter(p=>p.Category===category);
 
-if(btn) btn.classList.add("active");
-
-const container = document.getElementById("products");
-
-let products = [];
-
-if(category === "All"){
-products = allProducts;
-}else{
-products = allProducts.filter(p => p.Category === category);
-}
-
-container.innerHTML = "";
-
-products.forEach((product,index)=>{
-
-const offer = product["Today Offer"];
-
-container.innerHTML += `
-
-<div class="card" onclick='openProduct(${JSON.stringify(product)})'>
-
-<img loading="lazy" src="${product["Image Url"]}" />
-
+filtered.forEach((p,index)=>{
+container.innerHTML+=`
+<div class="card" onclick='openProduct(${JSON.stringify(p)},${index})'>
+<img loading="lazy" src="${p['Image Url']}">
 <div class="card-content">
-
-<div class="product-name">
-${product["Product Name"]}
-</div>
-
+<div class="card-title">${p['Product Name']}</div>
 <div class="price">
-
-${offer ? `
-<span class="old-price">₹${product.Price}</span>
-₹${offer}
-` : `₹${product.Price}`}
-
+${p['Today Offer']?`<span class="old-price">₹${p.Price}</span>₹${p['Today Offer']}`:`₹${p.Price}`}
 </div>
-
-${offer ? `
-<div class="offer">
-Today's Offer
+${p['Today Offer']?'<div class="offer-tag">Today Offer</div>':''}
 </div>
-` : ''}
-
-</div>
-
-</div>
-
-`;
-
+</div>`;
 });
-
 }
 
-function openProduct(product){
+function openProduct(p,index){
+document.getElementById('productModal').classList.add('active');
 
-document.getElementById("productModal").classList.add("active");
+const imgs=[p['Image Url'],p['Image Url2'],p['Image Url3'],p['Image Url4']].filter(Boolean);
 
-const slides = document.getElementById("slides");
-
-slides.innerHTML = "";
-
-[
-product["Image Url"],
-product["Image Url2"],
-product["Image Url3"],
-product["Image Url4"]
-]
-.filter(Boolean)
-.forEach(img => {
-
-slides.innerHTML += `
-<img src="${img}" />
-`;
-
+const slider=document.getElementById('slider');
+slider.innerHTML='';
+imgs.forEach(img=>{
+slider.innerHTML+=`<img src="${img}">`;
 });
 
-const offer = product["Today Offer"];
+const stock=parseInt(p.Stock||0);
 
-document.getElementById("productDetails").innerHTML = `
-
-<h2>${product["Product Name"]}</h2>
-
-<div class="detail-row">
-<b>Product ID:</b> ${product.Priority || 'N/A'}
+const details=document.getElementById('details');
+details.innerHTML=`
+<h2>${p['Product Name']}</h2>
+<br>
+<p><b>Product ID:</b> ${index+1}</p>
+<br>
+<p><b>Size:</b> ${p.Size}</p>
+<br>
+<p>${p.Description}</p>
+<br>
+<p>${p.Description2||''}</p>
+<br>
+<div>
+${stock>0?'<span class="stock-in">In Stock</span>':'<span class="stock-out">Out Of Stock</span>'}
 </div>
-
-<div class="detail-row">
-
-${offer ? `
-<span class="old-price">₹${product.Price}</span>
-<span style="font-size:28px;font-weight:bold;">₹${offer}</span>
-` : `
-<span style="font-size:28px;font-weight:bold;">₹${product.Price}</span>
-`}
-
+<br>
+<div class="price">
+${p['Today Offer']?`<span class="old-price">₹${p.Price}</span>₹${p['Today Offer']}`:`₹${p.Price}`}
 </div>
-
-<div class="detail-row">
-<b>Size:</b> ${product.Size || 'Free Size'}
-</div>
-
-<div class="detail-row">
-${product.Description2 || product.Description || ''}
-</div>
-
-<div class="detail-row">
-
-<span class="stock ${product.Stock > 0 ? 'instock' : 'outstock'}">
-
-${product.Stock > 0 ? 'In Stock' : 'Out Of Stock'}
-
-</span>
-
-</div>
-
-<div class="review-box">
-
-<div class="review">
-⭐⭐⭐⭐⭐ "Beautiful quality and fitting. Loved it!"
-</div>
-
-<div class="review">
-⭐⭐⭐⭐⭐ "Fabric feels premium. Fast delivery."
-</div>
-
-<div class="review">
-⭐⭐⭐⭐ "Looks exactly like pictures."
-</div>
-
-</div>
-
+<br>
+<h3>Customer Reviews</h3>
+<br>
+<p>⭐⭐⭐⭐⭐ Beautiful quality and fitting.</p>
+<br>
+<p>⭐⭐⭐⭐ Premium fabric and fast delivery.</p>
 `;
 
-document.getElementById("moreBtn").onclick = () => {
 
+document.getElementById('addCartBtn').onclick=()=>{
+cart.push(p);
+renderCart();
+openPage('cart');
 closeModal();
-
-showProducts(product.Category);
-
-window.scrollTo({
-top:0,
-behavior:'smooth'
-});
-
 };
 
-document.getElementById("cartBtn").onclick = () => {
 
-cart.push(product);
-
-openCart();
-
+document.getElementById('moreBtn').onclick=()=>{
+closeModal();
+showProducts(p.Category);
 };
-
 }
 
 function closeModal(){
-
-document.getElementById("productModal").classList.remove("active");
-
-}
-
-function openCart(){
-
-closeModal();
-
-document.querySelector(".products").style.display = "none";
-document.querySelector(".category-bar").style.display = "none";
-
-document.getElementById("cartPage").style.display = "block";
-
-renderCart();
-
+document.getElementById('productModal').classList.remove('active');
 }
 
 function renderCart(){
+const wrap=document.getElementById('cartItems');
+wrap.innerHTML='';
 
-const cartItems = document.getElementById("cartItems");
-
-if(cart.length === 0){
-
-cartItems.innerHTML = `
-<div class="empty-cart">
-Your cart is empty
-</div>
-`;
-
+if(cart.length===0){
+wrap.innerHTML='<p>Your cart is empty</p>';
 return;
-
 }
 
-cartItems.innerHTML = "";
-
-cart.forEach(item => {
-
-cartItems.innerHTML += `
-
-<div class="cart-item">
-
-<img src="${item["Image Url"]}" />
-
+cart.forEach(item=>{
+wrap.innerHTML+=`
+<div style="display:flex;gap:12px;background:#fff;padding:12px;border-radius:18px;margin-top:12px;box-shadow:0 2px 10px rgba(0,0,0,0.08);">
+<img src="${item['Image Url']}" style="width:80px;height:100px;object-fit:cover;border-radius:12px;">
 <div>
-
-<div style="font-weight:bold;margin-bottom:8px;">
-${item["Product Name"]}
+<h4>${item['Product Name']}</h4>
+<br>
+<p>₹${item['Today Offer']||item.Price}</p>
 </div>
+</div>`;
+});
+}
 
-<div style="font-size:18px;font-weight:bold;">
-₹${item["Today Offer"] || item.Price}
+function openPage(page){
+document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+
+if(page==='home') document.getElementById('homePage').classList.add('active');
+if(page==='cart') document.getElementById('cartPage').classList.add('active');
+if(page==='track') document.getElementById('trackPage').classList.add('active');
+if(page==='grow') document.getElementById('growPage').classList.add('active');
+}
+
+function toggleSearch(){
+const box=document.getElementById('searchBox');
+box.style.display=box.style.display==='block'?'none':'block';
+}
+
+const searchInput=document.getElementById('searchInput');
+searchInput.addEventListener('input',()=>{
+const val=searchInput.value.toLowerCase();
+const filtered=products.filter(p=>
+p['Product Name']?.toLowerCase().includes(val)||
+p.Category?.toLowerCase().includes(val)
+);
+
+const container=document.getElementById('products');
+container.innerHTML='';
+
+filtered.forEach((p,index)=>{
+container.innerHTML+=`
+<div class="card" onclick='openProduct(${JSON.stringify(p)},${index})'>
+<img loading="lazy" src="${p['Image Url']}">
+<div class="card-content">
+<div class="card-title">${p['Product Name']}</div>
+<div class="price">₹${p['Today Offer']||p.Price}</div>
 </div>
-
-</div>
-
-</div>
-
-`;
-
+</div>`;
+});
 });
 
+function filterPrice(limit){
+const filtered=products.filter(p=>parseInt(p['Today Offer']||p.Price)<=limit);
+const container=document.getElementById('products');
+container.innerHTML='';
+
+filtered.forEach((p,index)=>{
+container.innerHTML+=`
+<div class="card" onclick='openProduct(${JSON.stringify(p)},${index})'>
+<img loading="lazy" src="${p['Image Url']}">
+<div class="card-content">
+<div class="card-title">${p['Product Name']}</div>
+<div class="price">₹${p['Today Offer']||p.Price}</div>
+</div>
+</div>`;
+});
 }
-
 </script>
-
 </body>
 </html>
+```
