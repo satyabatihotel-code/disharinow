@@ -3,496 +3,276 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dishari Login</title>
+<title>Dishari Login System</title>
 
 <style>
-
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial,sans-serif;
-}
-
 body{
+margin:0;
+font-family:Arial;
 background:#f3f6fb;
-min-height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-padding:20px;
-overflow:hidden;
+height:100vh;
 }
 
-.auth-page{
-width:100%;
+.card{
+width:92%;
 max-width:420px;
 background:#fff;
-padding:30px 24px;
-border-radius:28px;
-box-shadow:0 10px 30px rgba(0,0,0,0.08);
-animation:fade .5s ease;
+padding:25px;
+border-radius:20px;
+box-shadow:0 10px 25px rgba(0,0,0,0.1);
 }
 
-.logo{
+h2{
 text-align:center;
-font-size:34px;
-font-weight:bold;
 color:#1877F2;
-margin-bottom:10px;
 }
 
-.sub{
-text-align:center;
-color:#666;
-margin-bottom:30px;
-font-size:14px;
-}
-
-.input-box{
-margin-bottom:16px;
-}
-
-.input-box input{
+input{
 width:100%;
-padding:15px;
+padding:14px;
+margin:8px 0;
 border:none;
+background:#f1f3f7;
+border-radius:12px;
 outline:none;
-background:#f1f4f9;
-border-radius:16px;
-font-size:15px;
-transition:.3s;
 }
 
-.input-box input:focus{
-background:#e8f0ff;
-box-shadow:0 0 0 2px #1877F2;
-}
-
-.main-btn{
+button{
 width:100%;
-padding:15px;
+padding:14px;
+margin-top:10px;
 border:none;
-border-radius:16px;
+border-radius:12px;
 background:#1877F2;
-color:#fff;
-font-size:16px;
+color:white;
 font-weight:bold;
-cursor:pointer;
 }
 
-.links{
-display:flex;
-justify-content:space-between;
-margin-top:18px;
+.link{
+text-align:center;
+margin-top:10px;
+color:#1877F2;
+cursor:pointer;
 font-size:14px;
 }
 
-.links span{
-color:#1877F2;
-cursor:pointer;
-}
-
-.signup-box{
+#signupBox{
 display:none;
-margin-top:24px;
-animation:slide .4s ease;
+margin-top:10px;
 }
 
 .toast{
 position:fixed;
-bottom:25px;
-left:50%;
-transform:translateX(-50%);
-background:#111;
+bottom:20px;
+background:#000;
 color:#fff;
-padding:14px 18px;
-border-radius:14px;
-font-size:14px;
+padding:10px 15px;
+border-radius:10px;
 display:none;
-z-index:999;
 }
 
-.home-page{
+.home{
 display:none;
-width:100%;
-height:100vh;
-background:#fff;
-padding:25px;
+text-align:center;
 }
 
-.home-box{
-background:#1877F2;
-color:#fff;
-padding:20px;
-border-radius:24px;
-font-size:24px;
-font-weight:bold;
+.home h1{
+color:#1877F2;
 }
-
-.logout-btn{
-margin-top:30px;
-width:100%;
-padding:15px;
-border:none;
-border-radius:16px;
-background:#1877F2;
-color:#fff;
-font-size:16px;
-font-weight:bold;
-}
-
-@keyframes fade{
-from{
-opacity:0;
-transform:translateY(20px);
-}
-to{
-opacity:1;
-transform:translateY(0);
-}
-}
-
-@keyframes slide{
-from{
-opacity:0;
-transform:translateY(20px);
-}
-to{
-opacity:1;
-transform:translateY(0);
-}
-}
-
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN PAGE -->
-<div class="auth-page" id="authPage">
+<!-- LOGIN -->
+<div class="card" id="authBox">
 
-<div class="logo">Dishari</div>
-<div class="sub">Premium Fashion Shopping App</div>
+<h2>Dishari Login</h2>
 
-<div class="input-box">
-<input type="text" id="loginUser" placeholder="Enter User ID">
-</div>
+<input id="loginUser" placeholder="User ID">
+<input id="loginPhone" placeholder="Mobile Number">
 
-<div class="input-box">
-<input type="tel" id="loginPhone" placeholder="Enter Mobile Number">
-</div>
+<button onclick="login()">Login</button>
 
-<button class="main-btn" onclick="loginUser()">
-Sign In
-</button>
-
-<div class="links">
-<span onclick="forgotPassword()">Forgot Password</span>
-<span onclick="toggleSignup()">Create Account</span>
-</div>
+<div class="link" onclick="toggleSignup()">Create Account</div>
+<div class="link" onclick="forgot()">Forgot Password</div>
 
 <!-- SIGNUP -->
-<div class="signup-box" id="signupBox">
+<div id="signupBox">
 
-<div class="input-box">
-<input type="text" id="signupUser" placeholder="Enter Your Name">
-</div>
+<input id="suUser" placeholder="Enter Name (min 6 chars)">
+<input id="suPhone" placeholder="Mobile Number (10 digit)">
 
-<div class="input-box">
-<input type="tel" id="signupPhone" placeholder="Enter Mobile Number">
-</div>
-
-<button class="main-btn" onclick="signupUser()">
-Sign Up
-</button>
+<button onclick="signup()">Sign Up</button>
 
 </div>
-
 </div>
 
 <!-- HOME -->
-<div class="home-page" id="homePage">
-
-<div class="home-box">
-Hi, <span id="userText"></span>
+<div class="home" id="homeBox">
+<h1>Hi <span id="uname"></span></h1>
+<p>Blank Home Page</p>
+<button onclick="logout()">Logout</button>
 </div>
 
-<button class="logout-btn" onclick="logoutUser()">
-Logout
-</button>
-
-</div>
-
-<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
 
-/* =========================
-   GOOGLE SHEET JSON
-========================= */
-
-const USERS_API = "https://opensheet.elk.sh/12klOqNz4ER47bvsZrvqJMkYnghi_T63J_LmaYvNeb9c/Users";
-
-/* =========================
-   GOOGLE FORM
-========================= */
-
-/*
-IMPORTANT
-
-REPLACE THESE 2 ENTRY IDs
-WITH YOUR REAL GOOGLE FORM ENTRY IDs
-*/
+/* ================= GOOGLE FORM ================= */
 
 const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfVFoHr73Z96fIijg-Yjk0909cMEuGpc4-vZl3gLGWhuaM7Rg/formResponse";
 
-const USER_ENTRY = "entry.1111111111";
-const PHONE_ENTRY = "entry.2222222222";
+const ENTRY_USER = "entry.1163932746";
+const ENTRY_PHONE = "entry.387551454";
 
-/* =========================
-   TOAST
-========================= */
+/* ================= GOOGLE SHEET (Users tab) ================= */
 
-function toast(msg){
+const USERS_API = "https://opensheet.elk.sh/12klOqNz4ER47bvsZrvqJMkYnghi_T63J_LmaYvNeb9c/Users";
 
-const t=document.getElementById("toast");
+/* ================= TOAST ================= */
 
+function show(msg){
+let t=document.getElementById("toast");
 t.innerText=msg;
-
 t.style.display="block";
-
-setTimeout(()=>{
-t.style.display="none";
-},2500);
-
+setTimeout(()=>t.style.display="none",2000);
 }
 
-/* =========================
-   TOGGLE SIGNUP
-========================= */
+/* ================= SIGNUP (SAVE TO GOOGLE SHEET) ================= */
 
-function toggleSignup(){
+async function signup(){
 
-const box=document.getElementById("signupBox");
+let u=document.getElementById("suUser").value.trim();
+let p=document.getElementById("suPhone").value.trim();
 
-if(box.style.display==="block"){
-box.style.display="none";
-}else{
-box.style.display="block";
-}
-
-}
-
-/* =========================
-   SIGNUP
-========================= */
-
-async function signupUser(){
-
-const user=document.getElementById("signupUser").value.trim();
-
-const phone=document.getElementById("signupPhone").value.trim();
-
-/* VALIDATION */
-
-if(user.length<6){
-
-toast("Minimum six characters required");
-
+if(u.length<6){
+show("Min 6 characters required");
 return;
-
 }
 
-if(phone.length!==10){
-
-toast("Wrong Phone Number");
-
+if(p.length!=10){
+show("Invalid phone number");
 return;
-
 }
 
-/* SAVE TO GOOGLE FORM */
-
-const formData = new FormData();
-
-formData.append(USER_ENTRY,user);
-
-formData.append(PHONE_ENTRY,phone);
-
-try{
+let form=new FormData();
+form.append(ENTRY_USER,u);
+form.append(ENTRY_PHONE,p);
 
 await fetch(FORM_URL,{
 method:"POST",
 mode:"no-cors",
-body:formData
+body:form
 });
 
-/* LOCAL STORAGE */
+show("Signup Success");
 
-localStorage.setItem("dishariLogin","true");
-
-localStorage.setItem("dishariUser",user);
-
-openHome(user);
-
-toast("Signup Success");
-
-}catch(e){
-
-toast("Signup Failed");
+openHome(u);
 
 }
 
-}
+/* ================= LOGIN (REAL GOOGLE SHEET CHECK) ================= */
 
-/* =========================
-   LOGIN
-========================= */
+async function login(){
 
-async function loginUser(){
+let u=document.getElementById("loginUser").value.trim();
+let p=document.getElementById("loginPhone").value.trim();
 
-const user=document.getElementById("loginUser").value.trim();
-
-const phone=document.getElementById("loginPhone").value.trim();
-
-if(!user || !phone){
-
-toast("Enter Login Details");
-
+if(!u || !p){
+show("Enter details");
 return;
+}
+
+let res=await fetch(USERS_API);
+let data=await res.json();
+
+let user=data.find(x=>
+(x["User Name"]==u || x["O"]==u || x["User ID"]==u) &&
+(x["Phone"]==p || x["P"]==p || x["Mobile"]==p)
+);
+
+if(user){
+show("Login Success");
+openHome(u);
+}else{
+show("Invalid Login");
+}
 
 }
 
-try{
+/* ================= HOME ================= */
 
-const res = await fetch(USERS_API);
+function openHome(name){
 
-const data = await res.json();
+document.getElementById("authBox").style.display="none";
+document.getElementById("homeBox").style.display="block";
+document.getElementById("uname").innerText=name;
 
-const found = data.find(item =>
+localStorage.setItem("dishariUser",name);
 
-(item["User ID"]===user || item["User Name"]===user || item["O"]===user)
-&&
-(item["Password"]===phone || item["User Phone"]===phone || item["P"]===phone)
+}
 
+/* ================= LOGOUT ================= */
+
+function logout(){
+
+localStorage.clear();
+location.reload();
+
+}
+
+/* ================= SIGNUP TOGGLE ================= */
+
+function toggleSignup(){
+
+let s=document.getElementById("signupBox");
+
+s.style.display=(s.style.display=="block")?"none":"block";
+
+}
+
+/* ================= FORGOT PASSWORD ================= */
+
+async function forgot(){
+
+let u=prompt("Enter User ID");
+
+if(!u)return;
+
+let res=await fetch(USERS_API);
+let data=await res.json();
+
+let user=data.find(x=>
+x["User Name"]==u || x["O"]==u
 );
 
-if(found){
+if(user){
 
-localStorage.setItem("dishariLogin","true");
+let phone=user["Phone"] || user["P"];
 
-localStorage.setItem("dishariUser",user);
-
-openHome(user);
-
-toast("Login Success");
+show("Registered: XXXXXXX"+phone.slice(-3));
 
 }else{
 
-toast("Invalid User ID or Password");
-
-}
-
-}catch(e){
-
-toast("Connection Error");
+show("User not found");
 
 }
 
 }
 
-/* =========================
-   HOME
-========================= */
-
-function openHome(user){
-
-document.getElementById("authPage").style.display="none";
-
-document.getElementById("homePage").style.display="block";
-
-document.getElementById("userText").innerText=user;
-
-}
-
-/* =========================
-   LOGOUT
-========================= */
-
-function logoutUser(){
-
-localStorage.removeItem("dishariLogin");
-
-document.getElementById("homePage").style.display="none";
-
-document.getElementById("authPage").style.display="block";
-
-}
-
-/* =========================
-   FORGOT PASSWORD
-========================= */
-
-async function forgotPassword(){
-
-const user = prompt("Enter Your User ID");
-
-if(!user) return;
-
-try{
-
-const res = await fetch(USERS_API);
-
-const data = await res.json();
-
-const found = data.find(item =>
-
-(item["User ID"]===user || item["User Name"]===user || item["O"]===user)
-
-);
-
-if(found){
-
-const phone =
-found["Password"] ||
-found["User Phone"] ||
-found["P"];
-
-toast("Password: XXXXXXX"+phone.slice(-3));
-
-}else{
-
-toast("User Not Found");
-
-}
-
-}catch(e){
-
-toast("Connection Error");
-
-}
-
-}
-
-/* =========================
-   AUTO LOGIN
-========================= */
+/* ================= AUTO LOGIN ================= */
 
 window.onload=function(){
 
-/* REMOVE THIS LINE IF YOU WANT LOGIN EVERY TIME */
+let u=localStorage.getItem("dishariUser");
 
-/* localStorage.clear(); */
+if(u){
 
-const login = localStorage.getItem("dishariLogin");
-
-const user = localStorage.getItem("dishariUser");
-
-if(login==="true" && user){
-
-openHome(user);
+openHome(u);
 
 }
 
