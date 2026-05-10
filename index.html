@@ -6,18 +6,24 @@
 <title>Dishari Login System</title>
 
 <style>
-body{
+*{
 margin:0;
+padding:0;
+box-sizing:border-box;
 font-family:Arial;
+}
+
+body{
 background:#f3f6fb;
+min-height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-height:100vh;
+padding:20px;
 }
 
-.card{
-width:92%;
+.auth{
+width:100%;
 max-width:420px;
 background:#fff;
 padding:25px;
@@ -28,6 +34,7 @@ box-shadow:0 10px 25px rgba(0,0,0,0.1);
 h2{
 text-align:center;
 color:#1877F2;
+margin-bottom:15px;
 }
 
 input{
@@ -35,7 +42,7 @@ width:100%;
 padding:14px;
 margin:8px 0;
 border:none;
-background:#f1f3f7;
+background:#f1f4f9;
 border-radius:12px;
 outline:none;
 }
@@ -47,7 +54,7 @@ margin-top:10px;
 border:none;
 border-radius:12px;
 background:#1877F2;
-color:white;
+color:#fff;
 font-weight:bold;
 }
 
@@ -59,10 +66,7 @@ cursor:pointer;
 font-size:14px;
 }
 
-#signupBox{
-display:none;
-margin-top:10px;
-}
+#signupBox{display:none;}
 
 .toast{
 position:fixed;
@@ -88,7 +92,7 @@ color:#1877F2;
 <body>
 
 <!-- LOGIN -->
-<div class="card" id="authBox">
+<div class="auth" id="authBox">
 
 <h2>Dishari Login</h2>
 
@@ -103,12 +107,13 @@ color:#1877F2;
 <!-- SIGNUP -->
 <div id="signupBox">
 
-<input id="suUser" placeholder="Enter Name (min 6 chars)">
-<input id="suPhone" placeholder="Mobile Number (10 digit)">
+<input id="suUser" placeholder="User Name (min 6 chars)">
+<input id="suPhone" placeholder="Mobile (10 digits)">
 
 <button onclick="signup()">Sign Up</button>
 
 </div>
+
 </div>
 
 <!-- HOME -->
@@ -126,10 +131,10 @@ color:#1877F2;
 
 const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfVFoHr73Z96fIijg-Yjk0909cMEuGpc4-vZl3gLGWhuaM7Rg/formResponse";
 
-const ENTRY_USER = "entry.1163932746";
-const ENTRY_PHONE = "entry.387551454";
+const USER_ENTRY = "entry.1163932746";
+const PHONE_ENTRY = "entry.387551454";
 
-/* ================= GOOGLE SHEET (Users tab) ================= */
+/* ================= GOOGLE SHEET ================= */
 
 const USERS_API = "https://opensheet.elk.sh/12klOqNz4ER47bvsZrvqJMkYnghi_T63J_LmaYvNeb9c/Users";
 
@@ -142,7 +147,7 @@ t.style.display="block";
 setTimeout(()=>t.style.display="none",2000);
 }
 
-/* ================= SIGNUP (SAVE TO GOOGLE SHEET) ================= */
+/* ================= SIGNUP ================= */
 
 async function signup(){
 
@@ -150,18 +155,19 @@ let u=document.getElementById("suUser").value.trim();
 let p=document.getElementById("suPhone").value.trim();
 
 if(u.length<6){
-show("Min 6 characters required");
+show("Min 6 chars required");
 return;
 }
 
 if(p.length!=10){
-show("Invalid phone number");
+show("Invalid phone");
 return;
 }
 
+/* SEND TO GOOGLE FORM (REAL STORAGE) */
 let form=new FormData();
-form.append(ENTRY_USER,u);
-form.append(ENTRY_PHONE,p);
+form.append(USER_ENTRY,u);
+form.append(PHONE_ENTRY,p);
 
 await fetch(FORM_URL,{
 method:"POST",
@@ -175,29 +181,27 @@ openHome(u);
 
 }
 
-/* ================= LOGIN (REAL GOOGLE SHEET CHECK) ================= */
+/* ================= LOGIN (REAL SHEET AUTH) ================= */
 
 async function login(){
 
 let u=document.getElementById("loginUser").value.trim();
 let p=document.getElementById("loginPhone").value.trim();
 
-if(!u || !p){
-show("Enter details");
-return;
-}
-
 let res=await fetch(USERS_API);
 let data=await res.json();
 
-let user=data.find(x=>
-(x["User Name"]==u || x["O"]==u || x["User ID"]==u) &&
-(x["Phone"]==p || x["P"]==p || x["Mobile"]==p)
+let found=data.find(x=>
+(x["User Name"]==u || x["O"]==u || x["User ID"]==u)
+&&
+(x["Phone"]==p || x["P"]==p)
 );
 
-if(user){
+if(found){
+
 show("Login Success");
 openHome(u);
+
 }else{
 show("Invalid Login");
 }
@@ -206,60 +210,52 @@ show("Invalid Login");
 
 /* ================= HOME ================= */
 
-function openHome(name){
+function openHome(u){
 
 document.getElementById("authBox").style.display="none";
 document.getElementById("homeBox").style.display="block";
-document.getElementById("uname").innerText=name;
+document.getElementById("uname").innerText=u;
 
-localStorage.setItem("dishariUser",name);
+localStorage.setItem("dishariUser",u);
 
 }
 
 /* ================= LOGOUT ================= */
 
 function logout(){
-
 localStorage.clear();
 location.reload();
-
 }
 
 /* ================= SIGNUP TOGGLE ================= */
 
 function toggleSignup(){
-
 let s=document.getElementById("signupBox");
-
 s.style.display=(s.style.display=="block")?"none":"block";
-
 }
 
-/* ================= FORGOT PASSWORD ================= */
+/* ================= FORGOT PASSWORD (SAFE) ================= */
 
 async function forgot(){
 
 let u=prompt("Enter User ID");
-
 if(!u)return;
 
 let res=await fetch(USERS_API);
 let data=await res.json();
 
-let user=data.find(x=>
+let found=data.find(x=>
 x["User Name"]==u || x["O"]==u
 );
 
-if(user){
+if(found){
 
-let phone=user["Phone"] || user["P"];
+let phone=found["P"] || found["Phone"];
 
 show("Registered: XXXXXXX"+phone.slice(-3));
 
 }else{
-
 show("User not found");
-
 }
 
 }
@@ -271,9 +267,7 @@ window.onload=function(){
 let u=localStorage.getItem("dishariUser");
 
 if(u){
-
 openHome(u);
-
 }
 
 }
