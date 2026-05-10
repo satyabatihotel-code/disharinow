@@ -1,275 +1,145 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 <head>
-<meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Dishari Login System</title>
+<title>Dishari Login</title>
 
 <style>
-*{
-margin:0;
-padding:0;
-box-sizing:border-box;
-font-family:Arial;
-}
-
 body{
+font-family:Arial;
 background:#f3f6fb;
-min-height:100vh;
 display:flex;
 justify-content:center;
 align-items:center;
-padding:20px;
+height:100vh;
+margin:0;
 }
 
-.auth{
-width:100%;
-max-width:420px;
-background:#fff;
+.box{
+width:90%;
+max-width:400px;
+background:white;
 padding:25px;
 border-radius:20px;
 box-shadow:0 10px 25px rgba(0,0,0,0.1);
 }
 
-h2{
-text-align:center;
-color:#1877F2;
-margin-bottom:15px;
-}
-
 input{
 width:100%;
-padding:14px;
+padding:12px;
 margin:8px 0;
 border:none;
-background:#f1f4f9;
-border-radius:12px;
-outline:none;
+background:#f1f3f7;
+border-radius:10px;
 }
 
 button{
 width:100%;
-padding:14px;
-margin-top:10px;
-border:none;
-border-radius:12px;
+padding:12px;
 background:#1877F2;
-color:#fff;
+color:white;
+border:none;
+border-radius:10px;
 font-weight:bold;
 }
 
-.link{
+h2{
 text-align:center;
-margin-top:10px;
 color:#1877F2;
-cursor:pointer;
-font-size:14px;
 }
 
-#signupBox{display:none;}
-
-.toast{
-position:fixed;
-bottom:20px;
-background:#000;
-color:#fff;
-padding:10px 15px;
-border-radius:10px;
-display:none;
-}
-
-.home{
+#home{
 display:none;
 text-align:center;
-}
-
-.home h1{
-color:#1877F2;
 }
 </style>
 </head>
 
 <body>
 
-<!-- LOGIN -->
-<div class="auth" id="authBox">
+<div class="box" id="loginBox">
 
 <h2>Dishari Login</h2>
 
-<input id="loginUser" placeholder="User ID">
-<input id="loginPhone" placeholder="Mobile Number">
+<input id="user" placeholder="User Name">
+<input id="pass" placeholder="Phone Number">
 
 <button onclick="login()">Login</button>
 
-<div class="link" onclick="toggleSignup()">Create Account</div>
-<div class="link" onclick="forgot()">Forgot Password</div>
-
-<!-- SIGNUP -->
-<div id="signupBox">
-
-<input id="suUser" placeholder="User Name (min 6 chars)">
-<input id="suPhone" placeholder="Mobile (10 digits)">
-
-<button onclick="signup()">Sign Up</button>
-
 </div>
 
-</div>
-
-<!-- HOME -->
-<div class="home" id="homeBox">
-<h1>Hi <span id="uname"></span></h1>
-<p>Blank Home Page</p>
+<div id="home">
+<h2>Welcome <span id="name"></span></h2>
 <button onclick="logout()">Logout</button>
 </div>
 
-<div class="toast" id="toast"></div>
-
 <script>
 
-/* ================= GOOGLE FORM ================= */
-
-const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfVFoHr73Z96fIijg-Yjk0909cMEuGpc4-vZl3gLGWhuaM7Rg/formResponse";
-
-const USER_ENTRY = "entry.1163932746";
-const PHONE_ENTRY = "entry.387551454";
-
-/* ================= GOOGLE SHEET ================= */
-
-const USERS_API = "https://opensheet.elk.sh/12klOqNz4ER47bvsZrvqJMkYnghi_T63J_LmaYvNeb9c/Users";
-
-/* ================= TOAST ================= */
-
-function show(msg){
-let t=document.getElementById("toast");
-t.innerText=msg;
-t.style.display="block";
-setTimeout(()=>t.style.display="none",2000);
-}
-
-/* ================= SIGNUP ================= */
-
-async function signup(){
-
-let u=document.getElementById("suUser").value.trim();
-let p=document.getElementById("suPhone").value.trim();
-
-if(u.length<6){
-show("Min 6 chars required");
-return;
-}
-
-if(p.length!=10){
-show("Invalid phone");
-return;
-}
-
-/* SEND TO GOOGLE FORM (REAL STORAGE) */
-let form=new FormData();
-form.append(USER_ENTRY,u);
-form.append(PHONE_ENTRY,p);
-
-await fetch(FORM_URL,{
-method:"POST",
-mode:"no-cors",
-body:form
-});
-
-show("Signup Success");
-
-openHome(u);
-
-}
-
-/* ================= LOGIN (REAL SHEET AUTH) ================= */
+/* YOUR SHEET CSV EXPORT LINK */
+const SHEET_URL =
+"https://docs.google.com/spreadsheets/d/12klOqNz4ER47bvsZrvqJMkYnghi_T63J_LmaYvNeb9c/gviz/tq?tqx=out:json";
 
 async function login(){
 
-let u=document.getElementById("loginUser").value.trim();
-let p=document.getElementById("loginPhone").value.trim();
+let u=document.getElementById("user").value.trim();
+let p=document.getElementById("pass").value.trim();
 
-let res=await fetch(USERS_API);
-let data=await res.json();
+if(!u || !p){
+alert("Fill all fields");
+return;
+}
 
-let found=data.find(x=>
-(x["User Name"]==u || x["O"]==u || x["User ID"]==u)
-&&
-(x["Phone"]==p || x["P"]==p)
-);
+let res=await fetch(SHEET_URL);
+let text=await res.text();
+
+let json=JSON.parse(text.substr(47).slice(0,-2));
+
+let rows=json.table.rows;
+
+let found=false;
+
+for(let r of rows){
+
+let name=r.c[0]?.v;
+let phone=r.c[1]?.v;
+
+if(name==u && phone==p){
+found=true;
+break;
+}
+
+}
 
 if(found){
 
-show("Login Success");
-openHome(u);
+localStorage.setItem("user",u);
+
+showHome(u);
 
 }else{
-show("Invalid Login");
-}
+
+alert("Invalid Login");
 
 }
 
-/* ================= HOME ================= */
-
-function openHome(u){
-
-document.getElementById("authBox").style.display="none";
-document.getElementById("homeBox").style.display="block";
-document.getElementById("uname").innerText=u;
-
-localStorage.setItem("dishariUser",u);
-
 }
 
-/* ================= LOGOUT ================= */
+function showHome(u){
+document.getElementById("loginBox").style.display="none";
+document.getElementById("home").style.display="block";
+document.getElementById("name").innerText=u;
+}
 
 function logout(){
 localStorage.clear();
 location.reload();
 }
 
-/* ================= SIGNUP TOGGLE ================= */
-
-function toggleSignup(){
-let s=document.getElementById("signupBox");
-s.style.display=(s.style.display=="block")?"none":"block";
-}
-
-/* ================= FORGOT PASSWORD (SAFE) ================= */
-
-async function forgot(){
-
-let u=prompt("Enter User ID");
-if(!u)return;
-
-let res=await fetch(USERS_API);
-let data=await res.json();
-
-let found=data.find(x=>
-x["User Name"]==u || x["O"]==u
-);
-
-if(found){
-
-let phone=found["P"] || found["Phone"];
-
-show("Registered: XXXXXXX"+phone.slice(-3));
-
-}else{
-show("User not found");
-}
-
-}
-
-/* ================= AUTO LOGIN ================= */
-
 window.onload=function(){
-
-let u=localStorage.getItem("dishariUser");
-
+let u=localStorage.getItem("user");
 if(u){
-openHome(u);
+showHome(u);
 }
-
 }
 
 </script>
