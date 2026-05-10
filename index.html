@@ -6,6 +6,7 @@
 <title>Dishari Login</title>
 
 <style>
+
 *{
 margin:0;
 padding:0;
@@ -20,6 +21,7 @@ display:flex;
 justify-content:center;
 align-items:center;
 padding:20px;
+overflow:hidden;
 }
 
 .auth-page{
@@ -141,16 +143,30 @@ font-weight:bold;
 }
 
 @keyframes fade{
-from{opacity:0;transform:translateY(20px)}
-to{opacity:1;transform:translateY(0)}
+from{
+opacity:0;
+transform:translateY(20px);
+}
+to{
+opacity:1;
+transform:translateY(0);
+}
 }
 
 @keyframes slide{
-from{opacity:0;transform:translateY(20px)}
-to{opacity:1;transform:translateY(0)}
+from{
+opacity:0;
+transform:translateY(20px);
 }
+to{
+opacity:1;
+transform:translateY(0);
+}
+}
+
 </style>
 </head>
+
 <body>
 
 <!-- LOGIN PAGE -->
@@ -195,7 +211,7 @@ Sign Up
 
 </div>
 
-<!-- BLANK HOME PAGE -->
+<!-- HOME -->
 <div class="home-page" id="homePage">
 
 <div class="home-box">
@@ -208,92 +224,278 @@ Logout
 
 </div>
 
+<!-- TOAST -->
 <div class="toast" id="toast"></div>
 
 <script>
 
+/* =========================
+   GOOGLE SHEET JSON
+========================= */
+
+const USERS_API = "https://opensheet.elk.sh/12klOqNz4ER47bvsZrvqJMkYnghi_T63J_LmaYvNeb9c/Users";
+
+/* =========================
+   GOOGLE FORM
+========================= */
+
+/*
+IMPORTANT
+
+REPLACE THESE 2 ENTRY IDs
+WITH YOUR REAL GOOGLE FORM ENTRY IDs
+*/
+
+const FORM_URL = "https://docs.google.com/forms/d/e/1FAIpQLSfVFoHr73Z96fIijg-Yjk0909cMEuGpc4-vZl3gLGWhuaM7Rg/formResponse";
+
+const USER_ENTRY = "entry.1111111111";
+const PHONE_ENTRY = "entry.2222222222";
+
+/* =========================
+   TOAST
+========================= */
+
 function toast(msg){
-const t=document.getElementById('toast');
+
+const t=document.getElementById("toast");
+
 t.innerText=msg;
-t.style.display='block';
+
+t.style.display="block";
+
 setTimeout(()=>{
-t.style.display='none';
+t.style.display="none";
 },2500);
+
 }
+
+/* =========================
+   TOGGLE SIGNUP
+========================= */
 
 function toggleSignup(){
-const box=document.getElementById('signupBox');
-box.style.display=box.style.display==='block'?'none':'block';
+
+const box=document.getElementById("signupBox");
+
+if(box.style.display==="block"){
+box.style.display="none";
+}else{
+box.style.display="block";
 }
 
-function signupUser(){
-const user=document.getElementById('signupUser').value.trim();
-const phone=document.getElementById('signupPhone').value.trim();
+}
+
+/* =========================
+   SIGNUP
+========================= */
+
+async function signupUser(){
+
+const user=document.getElementById("signupUser").value.trim();
+
+const phone=document.getElementById("signupPhone").value.trim();
+
+/* VALIDATION */
 
 if(user.length<6){
-toast('Minimum six characters required');
+
+toast("Minimum six characters required");
+
 return;
+
 }
 
 if(phone.length!==10){
-toast('Wrong Phone Number');
+
+toast("Wrong Phone Number");
+
 return;
+
 }
 
-localStorage.setItem('dishariUser',user);
-localStorage.setItem('dishariPhone',phone);
-localStorage.setItem('dishariLogin','true');
+/* SAVE TO GOOGLE FORM */
+
+const formData = new FormData();
+
+formData.append(USER_ENTRY,user);
+
+formData.append(PHONE_ENTRY,phone);
+
+try{
+
+await fetch(FORM_URL,{
+method:"POST",
+mode:"no-cors",
+body:formData
+});
+
+/* LOCAL STORAGE */
+
+localStorage.setItem("dishariLogin","true");
+
+localStorage.setItem("dishariUser",user);
 
 openHome(user);
 
-toast('Signup Success');
+toast("Signup Success");
+
+}catch(e){
+
+toast("Signup Failed");
+
 }
 
-function loginUser(){
-const user=document.getElementById('loginUser').value.trim();
-const phone=document.getElementById('loginPhone').value.trim();
+}
 
-const savedUser=localStorage.getItem('dishariUser');
-const savedPhone=localStorage.getItem('dishariPhone');
+/* =========================
+   LOGIN
+========================= */
 
-if(user===savedUser && phone===savedPhone){
-localStorage.setItem('dishariLogin','true');
+async function loginUser(){
+
+const user=document.getElementById("loginUser").value.trim();
+
+const phone=document.getElementById("loginPhone").value.trim();
+
+if(!user || !phone){
+
+toast("Enter Login Details");
+
+return;
+
+}
+
+try{
+
+const res = await fetch(USERS_API);
+
+const data = await res.json();
+
+const found = data.find(item =>
+
+(item["User ID"]===user || item["User Name"]===user || item["O"]===user)
+&&
+(item["Password"]===phone || item["User Phone"]===phone || item["P"]===phone)
+
+);
+
+if(found){
+
+localStorage.setItem("dishariLogin","true");
+
+localStorage.setItem("dishariUser",user);
+
 openHome(user);
-toast('Login Success');
+
+toast("Login Success");
+
 }else{
-toast('Invalid User ID or Password');
+
+toast("Invalid User ID or Password");
+
 }
+
+}catch(e){
+
+toast("Connection Error");
+
 }
+
+}
+
+/* =========================
+   HOME
+========================= */
 
 function openHome(user){
-document.getElementById('authPage').style.display='none';
-document.getElementById('homePage').style.display='block';
-document.getElementById('userText').innerText=user;
+
+document.getElementById("authPage").style.display="none";
+
+document.getElementById("homePage").style.display="block";
+
+document.getElementById("userText").innerText=user;
+
 }
+
+/* =========================
+   LOGOUT
+========================= */
 
 function logoutUser(){
-localStorage.removeItem('dishariLogin');
-document.getElementById('homePage').style.display='none';
-document.getElementById('authPage').style.display='block';
+
+localStorage.removeItem("dishariLogin");
+
+document.getElementById("homePage").style.display="none";
+
+document.getElementById("authPage").style.display="block";
+
 }
 
-function forgotPassword(){
-const phone=localStorage.getItem('dishariPhone');
+/* =========================
+   FORGOT PASSWORD
+========================= */
 
-if(phone){
-toast('Your password is XXXXXXX'+phone.slice(-3));
+async function forgotPassword(){
+
+const user = prompt("Enter Your User ID");
+
+if(!user) return;
+
+try{
+
+const res = await fetch(USERS_API);
+
+const data = await res.json();
+
+const found = data.find(item =>
+
+(item["User ID"]===user || item["User Name"]===user || item["O"]===user)
+
+);
+
+if(found){
+
+const phone =
+found["Password"] ||
+found["User Phone"] ||
+found["P"];
+
+toast("Password: XXXXXXX"+phone.slice(-3));
+
 }else{
-toast('No account found');
+
+toast("User Not Found");
+
 }
+
+}catch(e){
+
+toast("Connection Error");
+
 }
+
+}
+
+/* =========================
+   AUTO LOGIN
+========================= */
 
 window.onload=function(){
-const login=localStorage.getItem('dishariLogin');
-const user=localStorage.getItem('dishariUser');
 
-if(login==='true' && user){
+/* REMOVE THIS LINE IF YOU WANT LOGIN EVERY TIME */
+
+/* localStorage.clear(); */
+
+const login = localStorage.getItem("dishariLogin");
+
+const user = localStorage.getItem("dishariUser");
+
+if(login==="true" && user){
+
 openHome(user);
+
 }
+
 }
 
 </script>
